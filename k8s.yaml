@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wholesale-segmentation
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wholesale-segmentation
+  template:
+    metadata:
+      labels:
+        app: wholesale-segmentation
+    spec:
+      containers:
+      - name: wholesale-segmentation
+        image: nikhilraman12/wholesale-segmentation:latest
+        ports:
+        - containerPort: 7860
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wholesale-segmentation-service
+spec:
+  type: NodePort
+  selector:
+    app: wholesale-segmentation
+  ports:
+    - protocol: TCP
+      port: 7860
+      targetPort: 7860
+      nodePort: 30081
